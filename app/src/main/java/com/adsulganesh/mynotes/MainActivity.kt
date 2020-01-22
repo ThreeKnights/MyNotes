@@ -1,10 +1,16 @@
 package com.adsulganesh.mynotes
 
+import android.app.SearchManager
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.SearchView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.note_ticket.*
 import kotlinx.android.synthetic.main.note_ticket.view.*
@@ -26,6 +32,24 @@ class MainActivity : AppCompatActivity() {
         listOfNotes.add(Note(6,"Dean","Son agreed others exeter period myself few yet nature. Mention mr manners opinion if garrets enabled. To an occasional dissimilar impossible sentiments. Do fortune account written prepare invited no passage. Garrets use ten you the weather ferrars venture friends. Solid visit seems again you nor all."))
         var adapter =noteAdapter(listOfNotes)
         NotesList.adapter = adapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu,menu)
+        val sv = menu!!.findItem(R.id.app_bar_search).actionView as SearchView
+        val sm = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        sv.setSearchableInfo(sm.getSearchableInfo(componentName))
+        sv.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query:String):Boolean{
+                Toast.makeText(applicationContext,query,Toast.LENGTH_SHORT).show()
+                return false
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     inner class noteAdapter:BaseAdapter{
@@ -53,5 +77,10 @@ class MainActivity : AppCompatActivity() {
         override fun getCount(): Int {
             return lisOfNotes.size
         }
+    }
+
+    fun buAddNote(view: View) {
+        var intent = Intent(this,com.adsulganesh.mynotes.AddNote::class.java)
+        startActivity(intent)
     }
 }
